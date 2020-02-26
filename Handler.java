@@ -4,6 +4,12 @@ import java.awt.*;
 public class Handler {
 
   private LinkedList<GameObject> gameObjects;
+  private static Key[] keys = {
+    Key.DOWN, //W
+    Key.DOWN, //A
+    Key.DOWN, //S
+    Key.DOWN //D
+  };
 
   public Handler(){
     gameObjects = new LinkedList<GameObject>();
@@ -19,6 +25,14 @@ public class Handler {
 
   public void removeObject(GameObject object){
     gameObjects.remove(object);
+  }
+
+  public static void setKey(int i, Key k){
+    keys[i] = k;
+  }
+
+  public static Key getKey(int i){
+    return keys[i];
   }
 
   public void render(Graphics g){

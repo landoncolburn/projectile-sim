@@ -8,15 +8,11 @@ public class Game extends Canvas implements Runnable {
 
   public static Game gameInstance;
   public Handler handler;
-
-  private BufferedImage studioLogo;
   private Thread thread;
   private boolean isRunning = false;
 
-  public BufferedImageLoader bil = new BufferedImageLoader();
   public Dimension size = new Dimension(1000, 600);
-  public MouseMotionInput mmi;
-  public MouseInput mi;
+  public KeyInput ki;
 
   public Game(){
     new Window("Game", size, this);
@@ -25,13 +21,10 @@ public class Game extends Canvas implements Runnable {
     handler = new Handler();
     gameInstance = this;
 
-    mmi = new MouseMotionInput(handler);
-    mi = new MouseInput(handler);
+    ki = new KeyInput(handler);
 
-    handler.addObject(new Splashscreen());
-
-    this.addMouseListener(mi);
-    this.addMouseMotionListener(mmi);
+    this.addKeyListener(ki);
+    handler.addObject(new Square(250, 250));
   }
 
   public void start(){
@@ -50,7 +43,7 @@ public class Game extends Canvas implements Runnable {
   }
 
   @Override
-  public void run() {
+  public void run(){
     this.requestFocus();
     long lastTime = System.nanoTime();
     double amountOfTicks = 60.0;
@@ -58,18 +51,17 @@ public class Game extends Canvas implements Runnable {
     double delta = 0;
     long timer = System.currentTimeMillis();
     int frames = 0;
-    while (isRunning) {
+    while(isRunning){
       long now = System.nanoTime();
       delta += (now - lastTime) / ns;
       lastTime = now;
       while (delta >= 1) {
         tick();
+        render();
+        frames++;
         delta--;
       }
-      if (isRunning)
-        render();
-      frames++;
-      if (System.currentTimeMillis() - timer > 1000) {
+      if(System.currentTimeMillis() - timer > 1000){
         timer += 1000;
         System.out.println("FPS: " + frames);
         frames = 0;
@@ -96,7 +88,7 @@ public class Game extends Canvas implements Runnable {
     ///////----DRAW IN HERE----///////
     //////////////////////////////////
 
-    g.setColor(new Color(50, 50, 50));
+    g.setColor(Color.WHITE);
     g.fillRect(0, 0, size.width, size.height);
 
     handler.render(g);
